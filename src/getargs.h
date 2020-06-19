@@ -58,8 +58,8 @@ extern bool nondeterministic_parser;
 /* --language.  */
 struct bison_language
 {
-  char language[sizeof "Java"];
-  char skeleton[sizeof "java-skel.m4"];
+  char language[sizeof "Python"];
+  char skeleton[sizeof "python-skel.m4"];
   char src_extension[sizeof ".java"];
   char header_extension[sizeof ".java"];
   bool add_tab;
