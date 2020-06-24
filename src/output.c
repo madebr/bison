@@ -512,7 +512,7 @@ user_actions_output (FILE *out)
             string_output (out, rules[r].action_loc.start.file);
             fprintf (out, ")dnl\n");
           }
-        fprintf (out, "[%*s%s]],\n[[",
+        fprintf (out, "b4_format_user_code([%*s%s])],\n[[",
                  rules[r].action_loc.start.column - 1, "",
                  rules[r].action);
         rule_output (&rules[r], out);

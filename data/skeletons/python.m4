@@ -70,6 +70,7 @@ b4_percent_define_get3([api.parser.extends], [ extends ])[:]])
 # FIXME: convert to comma seperated list inside braces
 
 
+m4_define([b4_format_user_code], [$1])
 
 
 # b4_lexer_if(TRUE, FALSE)
@@ -122,7 +123,7 @@ m4_define([b4_tuple_vararg], [[Tuple[$1, ...]]])
 # ---------------------
 # Wrap TYPES between Union:
 # Union[$TYPE]
-m4_define([b4_union], [[Union[$1]]])
+m4_define([b4_union], [[Union[$*]]])
 
 
 
@@ -212,7 +213,7 @@ m4_define([b4_symbol_enum],
            m4_format([[%s = %s%s]],
                      b4_symbol([$1], [kind_base]),
                      [$1],
-                     m4_if([$1], b4_last_symbol, [[,]], [[,]])),
+                     m4_if([$1], b4_last_symbol, [[]], [[]])),
            [b4_symbol_tag_comment([$1])])])
 
 
@@ -220,14 +221,8 @@ m4_define([b4_symbol_enum],
 # ----------------------
 # The definition of the symbol internal numbers as an enum.
 m4_define([b4_declare_symbol_enum],
-[[  class SymbolKind(IntEnum):
+[[  class SymbolKind(Enum):
 ]b4_symbol_foreach([b4_symbol_enum])[
-
-    _VALUES = (
-      ]m4_map_args_sep([b4_symbol_kind(], [)], [,
-      ], b4_symbol_numbers)[,
-    )
-
 ]b4_parse_error_bmatch(
 [simple\|verbose],
 [[    # Return YYSTR after stripping away unnecessary quotes and
@@ -262,7 +257,7 @@ m4_define([b4_declare_symbol_enum],
     @@property
     def name(self) -> str:
       """The user-facing name of this symbol."""
-      return self._YYNAMES[self.value]
+      return self._YYNAMES.value  [self.value]
 ]],
 [custom\|detailed],
 [[    # YYNAMES_[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
@@ -517,3 +512,5 @@ m4_define([b4_var_decl],
 # Expand to either an empty string or "throws THROWS".
 m4_define([b4_maybe_throws],
           [m4_ifval($1, [ throws $1])])
+
+# Change the comment to allow macro's in comments

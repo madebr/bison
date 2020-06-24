@@ -16,12 +16,12 @@
 */
 
 %require "3.6"
-// %debug
+//%debug
 %define parse.trace
 
 // parse.error: verbose custom detailed
-//%define parse.error verbose
-%define parse.error custom
+%define parse.error verbose
+//%define parse.error custom
 
 %define api.push-pull both
 //%define parse.error detailed
@@ -58,15 +58,19 @@ class Position:
 %%
 
 result:
-  list  { print($1) }
+  list  {
+  $$=$1
+  print($1) }
 ;
 
 %nterm <list> list;
 
 list:
-  %empty     { Generates an empty list }
-| list item  { $$ = $1; $$.append($2) }
-;
+  %empty     { $$ = [] }
+| list item  {
+  $$ = $1
+  $$.append($2)
+};
 
 %nterm <str> item;
 %token <str> TEXT;
@@ -74,7 +78,14 @@ list:
 
 item:
   TEXT
-| NUMBER  { $$ = str($1); }
+| NUMBER  {
+    my_numbers = [1, 2, 3]
+    if $1 in my_numbers:
+      print("I know this number!")
+    print("Received {}".format($1))
+    print("{} ** 2 -> {}".format($1, $1*$1))
+    $$ = str($1)
+  }
 ;
 
 %%
@@ -85,22 +96,39 @@ class SimpleLexer(YYParser.Lexer):
   def __init__(self):
     self.count = 0
 
-  def yyerror(self, msg: str):
+  def yyerror(self, msg: str, *args):
     print(msg, file=sys.stderr)
 
   def yylex(self) -> int:
     # Return the next token.
     stage, self.count = self.count, self.count + 1
     if stage == 0:
-      return self.make_TEXT ("I have three numbers for you.")
-    elif stage in (1, 2, 3):
-      return self.make_NUMBER (stage)
-    elif stage == 4:
-      return self.make_TEXT ("And that's all!")
+      self.val = "I have four numbers for you."
+      return self.TEXT
+    elif stage in (1, 2, 3, 4):
+      self.val = stage
+      return self.NUMBER
+    elif stage == 5:
+      self.val = "And that's all!"
+      return self.TEXT
     else:
-      return self.make_YYEOF ()
+      self.val = None
+      return self.YYEOF
+
+  @property
+  def lval(self):
+    return self.val
+
+  def start_pos(self):
+    return Position()
+
+  def end_pos(self):
+    return Position()
+
 
 if __name__ == "__main__":
-  parser = parser (SimpleLexer())
+  lexer = SimpleLexer()
+  parser = YYParser(lexer)
   result = parser.parse ()
+  print("FINAL RESULT IS", result)
   sys.exit(0 if result else 1)

@@ -32,8 +32,11 @@ dist_skeletons_DATA =                           \
   data/skeletons/java-skel.m4                   \
   data/skeletons/java.m4                        \
   data/skeletons/lalr1.cc                       \
+  data/skeletons/lalr1.py                       \
   data/skeletons/lalr1.java                     \
   data/skeletons/location.cc                    \
+  data/skeletons/python.m4                      \
+  data/skeletons/python-skel.m4                 \
   data/skeletons/stack.hh                       \
   data/skeletons/traceon.m4                     \
   data/skeletons/variant.hh                     \

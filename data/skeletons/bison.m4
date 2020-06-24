@@ -693,6 +693,10 @@ m4_define([b4_user_code],
 [$1
 b4_syncline([@oline@], [@ofile@])])
 
+# b4_format_user_code(USER-CODE)
+# -----------------------
+# Format the code block from the user.
+m4_define([b4_format_user_code], [$1])
 
 # b4_define_user_code(MACRO, COMMENT)
 # -----------------------------------
