@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.6.90.  */
+/* A Bison parser, made by GNU Bison 3.7.12-ec397-dirty.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -136,7 +136,7 @@ extern int gram_debug;
     TAG = 54,                      /* "<tag>"  */
     TAG_ANY = 55,                  /* "<*>"  */
     TAG_NONE = 56,                 /* "<>"  */
-    INT = 57,                      /* "integer literal"  */
+    INT_LITERAL = 57,              /* "integer literal"  */
     PERCENT_PARAM = 58,            /* "%param"  */
     PERCENT_UNION = 59,            /* "%union"  */
     PERCENT_EMPTY = 60             /* "%empty"  */
@@ -156,7 +156,7 @@ union GRAM_STYPE
   char* EPILOGUE;                          /* "epilogue"  */
   char* PROLOGUE;                          /* "%{...%}"  */
   code_props_type code_props_type;         /* code_props_type  */
-  int INT;                                 /* "integer literal"  */
+  int INT_LITERAL;                         /* "integer literal"  */
   int yykind_82;                           /* int.opt  */
   named_ref* yykind_95;                    /* named_ref.opt  */
   param_type PERCENT_PARAM;                /* "%param"  */
