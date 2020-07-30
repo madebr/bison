@@ -25,9 +25,13 @@
 #include <mbswidth.h>
 #include <quotearg.h>
 #include <stdio.h>    /* fileno */
-#include <sys/ioctl.h>
+#if !defined(_WINDOWS)
+# include <sys/ioctl.h>
+#endif
 #include <sys/stat.h> /* fstat */
-#include <termios.h>
+#if !defined(_WINDOWS)
+# include <termios.h>
+#endif
 
 #ifdef WINSIZE_IN_PTEM
 # include <sys/stream.h>
