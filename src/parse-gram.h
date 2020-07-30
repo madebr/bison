@@ -123,7 +123,7 @@ extern int gram_debug;
     BRACED_CODE = 41,              /* "{...}"  */
     BRACED_PREDICATE = 42,         /* "%?{...}"  */
     BRACKETED_ID = 43,             /* "[identifier]"  */
-    CHAR = 44,                     /* "character literal"  */
+    CHAR_LITERAL = 44,             /* "character literal"  */
     COLON = 45,                    /* ":"  */
     EPILOGUE = 46,                 /* "epilogue"  */
     EQUAL = 47,                    /* "="  */
@@ -188,7 +188,7 @@ union GRAM_STYPE
   uniqstr yykind_74;                       /* tag.opt  */
   uniqstr tag;                             /* tag  */
   uniqstr variable;                        /* variable  */
-  unsigned char CHAR;                      /* "character literal"  */
+  unsigned char CHAR_LITERAL;              /* "character literal"  */
   value_type value;                        /* value  */
 
 

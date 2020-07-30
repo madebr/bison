@@ -149,7 +149,7 @@ enum yysymbol_kind_t
   YYSYMBOL_BRACED_CODE = 41,               /* "{...}"  */
   YYSYMBOL_BRACED_PREDICATE = 42,          /* "%?{...}"  */
   YYSYMBOL_BRACKETED_ID = 43,              /* "[identifier]"  */
-  YYSYMBOL_CHAR = 44,                      /* "character literal"  */
+  YYSYMBOL_CHAR_LITERAL = 44,              /* "character literal"  */
   YYSYMBOL_COLON = 45,                     /* ":"  */
   YYSYMBOL_EPILOGUE = 46,                  /* "epilogue"  */
   YYSYMBOL_EQUAL = 47,                     /* "="  */
@@ -1115,8 +1115,8 @@ tron (yyo);
          { fprintf (yyo, "[%s]", ((*yyvaluep).BRACKETED_ID)); }
         break;
 
-    case YYSYMBOL_CHAR: /* "character literal"  */
-         { fputs (char_name (((*yyvaluep).CHAR)), yyo); }
+    case YYSYMBOL_CHAR_LITERAL: /* "character literal"  */
+         { fputs (char_name (((*yyvaluep).CHAR_LITERAL)), yyo); }
         break;
 
     case YYSYMBOL_EPILOGUE: /* "epilogue"  */
@@ -2566,9 +2566,9 @@ yyreduce:
           location loc = muscle_percent_define_get_loc (var);
           subcomplain (&loc, complaint, _("definition of %s"), var);
         }
-      (yyval.id) = symbol_get (char_name ((yyvsp[0].CHAR)), (yylsp[0]));
+      (yyval.id) = symbol_get (char_name ((yyvsp[0].CHAR_LITERAL)), (yylsp[0]));
       symbol_class_set ((yyval.id), token_sym, (yylsp[0]), false);
-      symbol_code_set ((yyval.id), (yyvsp[0].CHAR), (yylsp[0]));
+      symbol_code_set ((yyval.id), (yyvsp[0].CHAR_LITERAL), (yylsp[0]));
     }
     break;
 
