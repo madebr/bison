@@ -23,7 +23,7 @@
 %define parse.error verbose
 //%define parse.error custom
 
-%define api.push-pull both
+//%define api.push-pull both
 //%define parse.error detailed
 //%define parse.lac full
 
@@ -57,10 +57,11 @@ class Position:
 
 %%
 
+%nterm <list> result;
+
 result:
   list  {
-  $$=$1
-  print($1) }
+  $$=$1 }
 ;
 
 %nterm <list> list;
@@ -96,33 +97,25 @@ class SimpleLexer(YYParser.Lexer):
   def __init__(self):
     self.count = 0
 
-  def yyerror(self, msg: str, *args):
+  def yyerror(self, msg: str, *args) -> None:
     print(msg, file=sys.stderr)
 
-  def yylex(self) -> int:
+  def yylex(self) -> Tuple[int, object]:
     # Return the next token.
     stage, self.count = self.count, self.count + 1
     if stage == 0:
-      self.val = "I have four numbers for you."
-      return self.TEXT
+      return self.TEXT, "I have four numbers for you."
     elif stage in (1, 2, 3, 4):
-      self.val = stage
-      return self.NUMBER
+      return self.NUMBER, stage
     elif stage == 5:
-      self.val = "And that's all!"
-      return self.TEXT
+      return self.TEXT, "And that's all!"
     else:
-      self.val = None
-      return self.YYEOF
+      return self.YYEOF, None
 
-  @property
-  def lval(self):
-    return self.val
-
-  def start_pos(self):
+  def start_pos(self) -> Position:
     return Position()
 
-  def end_pos(self):
+  def end_pos(self) -> Position:
     return Position()
 
 

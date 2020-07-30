@@ -228,22 +228,14 @@ from typing import List, IO, Optional, Tuple, Union
       """
       pass
 ]])[
-    @@property
     @@abstractmethod
-    def lval(self) -> ]b4_yystype[:
-      """
-      Method to retrieve the semantic value of the last scanned token.
-      :return: the semantic value of the last scanned token.
-      """
-      pass
-
-    @@abstractmethod
-    def yylex(self) -> int:
+    def yylex(self) -> ]b4_tuple([int, ]b4_yystype)[:
       """
       Entry point for the scanner.  Returns the token identifier corresponding
-      to the next token and prepares to return the semantic value
+      to the next token, its semantic value
       ]b4_locations_if([and beginning/ending positions ])[of the token.
-      :return: the token identifier corresponding to the next token.
+      :return: the token identifier corresponding to the next token, it semantic value]b4_locations_if([
+      and beginning/ending positions])[
       """
       pass
 ]])[
@@ -287,7 +279,7 @@ b4_parse_param_vars[
   def __init__(self, ]b4_parse_param_decl([[lexer: Lexer]])[):
     """
       Instantiates the Bison-generated parser.
-      :param yylexer The scanner that will supply tokens to the parser.
+      :param lexer The scanner that will supply tokens to the parser.
     """]
 b4_percent_code_get([[init]])[
     """ The object doing lexical analysis for us. """
@@ -460,14 +452,17 @@ b4_push_if(
           yyvalue))
 ]])[
 ]b4_push_if([],[[
-  def parse(self) -> int:
+  def parse(self) -> bool:
     """
     Parse input from the scanner that was specified at object construction
     time.  Return whether the end of the input was reached successfully.
     :return: <tt>true</tt> if the parsing succeeds.  Note that this does not
               imply that there were no syntax errors.
     """
-  ]])[
+    #yylextoken: int = self._yylextoken
+    #yystate: ]b4_yystype[ = self._yystate]b4_locations_if([[
+    #yylexloc: ]b4_position_type[ = self._yylexloc]])[
+]])[
 ]b4_push_if([[
   def push_parse(self, yylextoken: int, yylexval: ]b4_yystype[]b4_locations_if([, yylexloc: b4_union(b4_location_type, b4_position_type)])[) -> int:
     """
@@ -478,11 +473,10 @@ b4_push_if(
     :param yylexloc: current location or position]])[
 
     :return: <tt>YYACCEPT, YYABORT, YYPUSH_MORE</tt>
-    """]])[
-   ]b4_locations_if([[
+    """]b4_locations_if([[
     if isinstance(yylexloc, ]b4_position_type[):
-      yylexloc = self.]b4_location_type[(yylexloc)]])
-b4_push_if([],[[
+      yylexloc = self.]b4_location_type[()]])])[
+]b4_push_if([],[[
 ]b4_define_state[]b4_parse_trace_if([[
     self._yycdebug ("Starting parse")]])[
     self._yyerrstatus = 0
@@ -706,7 +700,7 @@ b4_dollar_popdef[]dnl
         self._yystack.pop (2)]])[
 
         # Shift the error token.]b4_parse_trace_if([[
-        self._yy_symbol_print("Shifting", self.SymbolKind(self._yystos_[self._yyn]),
+        self._yy_symbol_print("Shifting", self.SymbolKind(self._yystos[self._yyn]),
                               self._yylval]b4_locations_if([, yyloc])[)]])[
 
         self._yystate = self._yyn
@@ -733,7 +727,7 @@ b4_dollar_popdef[]dnl
     """]b4_define_state[
 
     # Error handling.
-    self._yynerrs = 0;]b4_locations_if([[
+    self._yynerrs = 0]b4_locations_if([[
     # The location where the error started.
     self._yyerrloc = None
     self._yylloc = ]b4_location_type_full[ (None, None)]])[
@@ -760,9 +754,8 @@ b4_dollar_popdef[]dnl
     if self._yylexer is None:
       raise ValueError("lexer is None")
     while True:
-      token: int = self._yylexer.yylex()
-      lval: ]b4_yystype[ = self._yylexer.lval]b4_locations_if([[
-      yyloc: ]b4_parser_class[.]b4_location_type[ = self.]b4_location_type[(self._yylexer.start_position, self._yylexer.end_position)
+      token, lval = self._yylexer.yylex()]b4_locations_if([[
+      yyloc: ]b4_parser_class[.]b4_location_type[ = self.]b4_location_type[(self._yylexer.start_pos, self._yylexer.end_pos)
       status = self.push_parse(token, lval, yyloc)]], [[
       status = self.push_parse(token, lval)]])[
       if status != self.YYPUSH_MORE:
@@ -815,7 +808,7 @@ b4_dollar_popdef[]dnl
         yyxbegin = -yyn if yyn < 0 else 0
         # Stay within bounds of both yycheck and yytname.
         yychecklim: int = ]b4_parser_class[._YYLAST - yyn + 1
-        yyxend: int = min(yychecklim, ]b4_parser_class[.NTOKENS)
+        yyxend: int = min(yychecklim, ]b4_parser_class[.NTOKENS())
         for yyx in range(yyxbegin, yyxend):
           if ]b4_parser_class[._yycheck[yyx + yyn] == yyx and yyx != ]b4_parser_class[.SymbolKind.]b4_symbol(1, kind)[.get_code() \
               and not ]b4_parser_class[._yy_table_value_is_error(]b4_parser_class[._yytable[yyx + yyn]):
